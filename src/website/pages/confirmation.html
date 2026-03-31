@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Zamino's Confirmation</title>
+		<link rel="icon" type="image/svg+xml" href="../assets/zaminos_favicon/favicon.svg" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="96x96"
+			href="../assets/zaminos_favicon/favicon-96x96.png"
+		/>
+		<link rel="icon" href="../assets/zaminos_favicon/favicon.ico" sizes="any" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="../assets/zaminos_favicon/apple-touch-icon.png"
+		/>
+		<link rel="manifest" href="../assets/zaminos_favicon/site.webmanifest" />
+		<meta name="theme-color" content="#0c1116" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="../assets/styles.css" />
+	</head>
+	<body>
+		<header class="top-nav">
+			<div class="container top-nav-inner">
+				<a class="brand" href="/" aria-label="Zamino's Pizza">
+					<img class="brand-logo" src="../assets/zaminos-logo.png" alt="Zamino's Pizza logo" />
+				</a>
+				<nav class="links">
+					<a href="/">Home</a>
+					<a href="/menu">Menu</a>
+					<a href="/confirmation" aria-current="page">Latest Order</a>
+				</nav>
+			</div>
+		</header>
+
+		<main class="container confirmation">
+			<div class="eyebrow">Order Status</div>
+			<h1>Order Confirmation</h1>
+			<p class="status" style="max-width: 56ch; margin: 0 0 1.3rem;">
+				The latest successful order appears below.
+			</p>
+
+			<section class="panel" data-testid="order-confirmation-panel">
+				<h2>Confirmation Id</h2>
+				<p class="mono" data-testid="order-confirmation-id" id="order-confirmation-id">
+					No order yet
+				</p>
+				<div id="order-confirmation-meta" data-testid="order-confirmation-meta"></div>
+			</section>
+
+			<section class="panel" data-testid="website-order-notification-panel">
+				<h2>Website Notification Feed</h2>
+				<p
+					id="website-order-notification"
+					class="mono"
+					data-testid="website-order-notification"
+				>
+					Waiting for first order notification.
+				</p>
+			</section>
+		</main>
+
+		<script type="module" src="../scripts/confirmation.ts"></script>
+	</body>
+</html>

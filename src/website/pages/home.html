@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Zamino's Pizza</title>
+		<link rel="icon" type="image/svg+xml" href="../assets/zaminos_favicon/favicon.svg" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="96x96"
+			href="../assets/zaminos_favicon/favicon-96x96.png"
+		/>
+		<link rel="icon" href="../assets/zaminos_favicon/favicon.ico" sizes="any" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="../assets/zaminos_favicon/apple-touch-icon.png"
+		/>
+		<link rel="manifest" href="../assets/zaminos_favicon/site.webmanifest" />
+		<meta name="theme-color" content="#0c1116" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="../assets/styles.css" />
+	</head>
+	<body>
+		<header class="top-nav">
+			<div class="container top-nav-inner">
+				<a class="brand" href="/" aria-label="Zamino's Pizza">
+					<img class="brand-logo" src="../assets/zaminos-logo.png" alt="Zamino's Pizza logo" />
+				</a>
+				<nav class="links">
+					<a href="/" aria-current="page">Home</a>
+					<a href="/menu" data-testid="open-menu-link">Menu</a>
+				</nav>
+			</div>
+		</header>
+
+		<main class="container">
+			<section class="hero">
+				<div>
+					<div class="eyebrow">System Status: Ready</div>
+					<h1>Order Pizza Through a Real Website UI</h1>
+					<p>
+						Zamino's is built as a deterministic test site for agent automation.
+						Everything in the ordering flow uses stable selectors so browser tools can
+						read the menu, add items, and complete checkout.
+					</p>
+					<div class="button-row">
+						<a class="button button-primary" href="/menu" data-testid="start-order-link"
+							>Open Menu</a
+						>
+						<a class="button button-secondary" href="/confirmation"
+							>Latest Order</a
+						>
+					</div>
+				</div>
+
+				<aside class="hero-card" data-testid="home-feature-panel">
+					<div class="eyebrow">For Automation</div>
+					<h2>Playwright Friendly</h2>
+					<p>
+						Use selectors such as
+						<code>data-testid="menu-item-card"</code>,
+						<code>data-testid="checkout-button"</code>, and
+						<code>data-testid="order-confirmation-id"</code>.
+					</p>
+				</aside>
+			</section>
+		</main>
+	</body>
+</html>

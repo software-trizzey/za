@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Zamino's Menu</title>
+		<link rel="icon" type="image/svg+xml" href="../assets/zaminos_favicon/favicon.svg" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="96x96"
+			href="../assets/zaminos_favicon/favicon-96x96.png"
+		/>
+		<link rel="icon" href="../assets/zaminos_favicon/favicon.ico" sizes="any" />
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="../assets/zaminos_favicon/apple-touch-icon.png"
+		/>
+		<link rel="manifest" href="../assets/zaminos_favicon/site.webmanifest" />
+		<meta name="theme-color" content="#0c1116" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="../assets/styles.css" />
+	</head>
+	<body>
+		<header class="top-nav">
+			<div class="container top-nav-inner">
+				<a class="brand" href="/" aria-label="Zamino's Pizza">
+					<img class="brand-logo" src="../assets/zaminos-logo.png" alt="Zamino's Pizza logo" />
+				</a>
+				<nav class="links">
+					<a href="/">Home</a>
+					<a href="/menu" aria-current="page">Menu</a>
+					<a href="/confirmation">Latest Order</a>
+					<span
+						data-testid="cart-count-badge"
+						class="badge"
+						aria-label="Cart item count"
+						>0</span
+					>
+				</nav>
+			</div>
+		</header>
+
+		<main class="container section">
+			<div class="eyebrow">Menu / v1</div>
+			<h1>Curated Pizza Modules</h1>
+			<p class="status" style="max-width: 56ch; margin: 0 0 1.3rem;">
+				Choose a pizza, set quantity, and run a real checkout through UI interactions.
+			</p>
+
+			<div class="menu-layout">
+				<section class="menu-grid" data-testid="menu-grid" id="menu-grid"></section>
+
+				<aside class="cart" data-testid="cart-panel">
+					<h2>Active Cart</h2>
+					<div id="cart-items" data-testid="cart-items"></div>
+					<div class="cart-total">
+						<span>Total</span>
+						<strong id="cart-total" data-testid="cart-total">$0.00</strong>
+					</div>
+					<button
+						id="checkout-button"
+						data-testid="checkout-button"
+						class="button button-primary"
+						style="margin-top: 1rem; width: 100%"
+					>
+						Execute Order
+					</button>
+					<div id="cart-status" data-testid="cart-status" class="status"></div>
+				</aside>
+			</div>
+		</main>
+
+		<script type="module" src="../scripts/menu.ts"></script>
+	</body>
+</html>

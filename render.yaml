@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: za-website
+    runtime: node
+    numInstances: 1
+    buildCommand: bun install
+    startCommand: bun run start:website
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: BUN_VERSION
+        value: 1.3.4
