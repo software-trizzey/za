@@ -1,6 +1,7 @@
 services:
   - type: web
     name: Zamino's
+    plan: free
     runtime: node
     numInstances: 1
     buildCommand: bun install
