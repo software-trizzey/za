@@ -13,8 +13,8 @@ Instead of staying in toy prompts, Za drives website ordering end-to-end on a li
 **Important Concepts Learned:**
 - The five primitives of agentic systems: an LLM, a loopable session, context window, tool access, system prompt to define behaviour
 - Long-term memory using simple JSON file for caching user details like recent and favorite orders
-- Support for defining an MCP config and integrating a 3rd party MCP server
-- Building a REPL and CLI for interacting with the agent and persist
+- Support for defining an MCP config and integrating a 3rd party MCP server (playwright)
+- Building a REPL and CLI for interacting with the agent
 
 **Live site**: https://za-website.onrender.com/
 
