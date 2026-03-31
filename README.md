@@ -16,7 +16,7 @@ Instead of staying in toy prompts, Za drives website ordering end-to-end on a li
 - Support for defining an MCP config and integrating a 3rd party MCP server (playwright)
 - Building a REPL and CLI for interacting with the agent
 
-**Live site**: https://za-website.onrender.com/
+**Live site**: https://zaminos.onrender.com/
 
 
 ## High-level System View
@@ -103,7 +103,7 @@ Ensure Bun's bin directory is in your `PATH` (typically `~/.bun/bin`), then run:
 
 ```bash
 za # activate interactive REPL
-za run "I want a pizza from https://za-website.onrender.com"
+za run "I want a pizza from https://zaminos.onrender.com
 ```
 
 
