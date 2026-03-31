@@ -5,7 +5,7 @@ import {
 	type WebsiteOrderSelection,
 } from "./data";
 
-export type PlaceOrderRequestBody = {
+type PlaceOrderRequestBody = {
 	selections: WebsiteOrderSelection[];
 };
 

@@ -1,12 +1,5 @@
 import z from "zod";
 
-export const PizzaMenuItemSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	priceCents: z.number().int().min(0),
-	isAvailable: z.boolean(),
-});
-
 export const OrderSelectionSchema = z.object({
 	menuItemId: z.string().min(1),
 	quantity: z.number().int().min(1),
@@ -25,15 +18,6 @@ export const OrderResultSchema = z.object({
 	items: OrderItemSchema.array().min(1),
 	totalPriceCents: z.number().int().min(1),
 });
-
-export const ReadMenuToolArgumentsSchema = z.object({}).strict();
-
-export const PlaceOrderToolArgumentsSchema = z
-	.object({
-		userId: z.string().min(1),
-		selections: z.array(OrderSelectionSchema).min(1),
-	})
-	.strict();
 
 const IsoTimestampSchema = z.iso.datetime();
 
@@ -65,19 +49,20 @@ export const OrderSnapshotSchema = z
 	})
 	.strict();
 
-export const RecentOrdersSchema = z
-	.object({
-		lastOrderId: z.string().min(1).nullable(),
-		recentOrders: z.array(OrderSnapshotSchema).max(5),
-	})
-	.strict();
-
-export const UserMemorySchema = z
+export const MemoryBucketSchema = z
 	.object({
 		favoriteOrder: FavoriteOrderSchema.nullable(),
 		lastOrderId: z.string().min(1).nullable(),
 		recentOrders: z.array(OrderSnapshotSchema).max(5),
 		updatedAtIso: IsoTimestampSchema,
+	})
+	.strict();
+
+export const UserMemorySchema = z
+	.object({
+		websiteByOrigin: z
+			.record(z.string().trim().min(1), MemoryBucketSchema)
+			.default({}),
 	})
 	.strict();
 
@@ -88,31 +73,26 @@ export const MemoryStoreSchema = z
 	})
 	.strict();
 
-export const GetUserMemoryArgumentsSchema = z
+export const RecordOrderArgumentsSchema = z
 	.object({
 		userId: z.string().min(1),
+		websiteOrigin: z.string().min(1),
+		orderResult: OrderResultSchema,
+		selections: z.array(OrderSelectionSchema).min(1),
+	})
+	.strict();
+
+export const GetMemoryArgumentsSchema = z
+	.object({
+		userId: z.string().min(1),
+		websiteOrigin: z.string().min(1),
 	})
 	.strict();
 
 export const SaveFavoriteOrderArgumentsSchema = z
 	.object({
 		userId: z.string().min(1),
+		websiteOrigin: z.string().min(1),
 		favoriteOrder: FavoriteOrderInputSchema.nullable(),
 	})
 	.strict();
-
-export const GetRecentOrdersArgumentsSchema = z
-	.object({
-		userId: z.string().min(1),
-	})
-	.strict();
-
-export const UserSchema = z.object({
-	id: z.string(),
-	email: z.email(),
-	name: z.string(),
-	favoriteOrder: FavoriteOrderSchema.nullable(),
-	lastOrderId: z.string().nullable(),
-	recentOrders: z.array(OrderSnapshotSchema),
-	updatedAtIso: IsoTimestampSchema,
-});

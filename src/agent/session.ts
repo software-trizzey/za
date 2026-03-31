@@ -22,6 +22,8 @@ type SessionRunner = {
 };
 
 const DEFAULT_MODEL = "gpt-5.4-nano";
+const MISSING_WEBSITE_URL_MESSAGE =
+	"Please provide a website URL (http/https) so I can find the menu and stage your order.";
 
 function createUserMessage(prompt: string): any {
 	return {
@@ -55,8 +57,6 @@ export async function createSessionRunner(params: {
 				return "Please provide a request.";
 			}
 
-			inputHistory.push(createUserMessage(trimmedPrompt));
-
 			const derivedContext = deriveExecutionContext({
 				userId: params.userId,
 				latestUserMessage: trimmedPrompt,
@@ -64,6 +64,12 @@ export async function createSessionRunner(params: {
 			});
 			const executionContext = derivedContext.executionContext;
 			allowedBrowserOrigin = derivedContext.nextAllowedBrowserOrigin;
+
+			if (!executionContext.allowedBrowserOrigin) {
+				return MISSING_WEBSITE_URL_MESSAGE;
+			}
+
+			inputHistory.push(createUserMessage(trimmedPrompt));
 
 			for (let turn = 0; turn < params.config.maxTurns; turn++) {
 				const turnNumber = turn + 1;

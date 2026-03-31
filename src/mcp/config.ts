@@ -14,7 +14,6 @@ export const McpServerConfigSchema = z
 		maxArgumentBytes: z.number().int().positive().default(64_000),
 		maxRetries: z.number().int().min(0).max(3).default(1),
 		maxDiscoveredTools: z.number().int().positive().default(200),
-		enabled: z.boolean().default(true),
 	})
 	.strict();
 
@@ -33,22 +32,11 @@ const PLAYWRIGHT_MCP_SERVER: McpServerConfig = {
 	maxArgumentBytes: 64_000,
 	maxRetries: 1,
 	maxDiscoveredTools: 200,
-	enabled: true,
 };
 
-const McpEnvSchema = z
-	.looseObject({
-		MCP_PLAYWRIGHT_ENABLED: z.stringbool().default(false),
-	});
-
 export function getConfiguredMcpServers(
-	env: Record<string, string | undefined> = process.env,
 ): McpServerConfig[] {
-	const parsedEnv = McpEnvSchema.parse(env);
-
-	const configuredServers: McpServerConfig[] = parsedEnv.MCP_PLAYWRIGHT_ENABLED
-		? [PLAYWRIGHT_MCP_SERVER]
-		: [];
+	const configuredServers: McpServerConfig[] = [PLAYWRIGHT_MCP_SERVER];
 
 	return configuredServers.map((server) => McpServerConfigSchema.parse(server));
 }

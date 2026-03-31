@@ -16,12 +16,13 @@ observe -> decide -> act -> verify.
   - confirming order completion
 
 ## Architecture
-The website is served by Bun and split into server, data, config, page, and script layers.
+The website is served by Bun and split into server, data, route, page, and script layers.
 
 Core files:
 
 - `src/website/server.ts`: Bun server and route wiring
-- `src/website/config.ts`: centralized website port and route constants
+- `src/website/routes.ts`: centralized route constants
+- `src/website/server-config.ts`: website port configuration
 - `src/website/data.ts`: menu catalog and website order types
 - `src/website/helpers.ts`: request parsing, order construction, response helpers
 - `src/website/pages/home.html`: landing page
@@ -32,7 +33,7 @@ Core files:
 - `src/website/assets/styles.css`: shared website styling
 
 ## Route Configuration
-All routes are defined in `src/website/config.ts` under `WEBSITE_ROUTES`.
+All routes are defined in `src/website/routes.ts` under `WEBSITE_ROUTES`.
 
 Page routes:
 

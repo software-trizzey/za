@@ -1,11 +1,12 @@
 import { McpToolExecutionError } from "../mcp/provider";
 import { errorMessage } from "../helpers";
-import { SupportedTools, type ToolExecutionFailure, type ToolExecutionResult } from "../types";
+import type { ToolExecutionFailure, ToolExecutionResult } from "../types";
 import {
 	LocalToolInputValidationError,
 	isLocalToolRequiringUserId,
+	isLocalToolRequiringWebsiteOrigin,
 } from "./providers/local";
-import { evaluateToolExecutionPolicies } from "./policies";
+import { evaluateBrowserExecutionPolicy } from "./policies/browser";
 import { getToolRegistry } from "./registry";
 import { toToolResultFailure, toToolResultSuccess } from "./results";
 import type { UnifiedTool, UnifiedToolExecutionContext } from "./unified-schema";
@@ -57,21 +58,33 @@ function enrichToolArgumentsWithContext(
 	}
 
 	const originalToolName = tool.descriptor.metadata?.originalToolName;
-	if (
-		typeof originalToolName !== "string" ||
-		!isLocalToolRequiringUserId(originalToolName)
-	) {
+	if (typeof originalToolName !== "string") {
 		return args;
 	}
 
-	if (args !== null && typeof args === "object" && !Array.isArray(args)) {
-		return {
-			...(args as Record<string, unknown>),
-			userId: context.userId,
-		};
+	const shouldInjectUserId = isLocalToolRequiringUserId(originalToolName);
+	const shouldInjectWebsiteOrigin = isLocalToolRequiringWebsiteOrigin(
+		originalToolName,
+	);
+
+	if (!shouldInjectUserId && !shouldInjectWebsiteOrigin) {
+		return args;
 	}
 
-	return { userId: context.userId };
+	const enrichedArgs: Record<string, unknown> =
+		args !== null && typeof args === "object" && !Array.isArray(args)
+			? { ...(args as Record<string, unknown>) }
+			: {};
+
+	if (shouldInjectUserId) {
+		enrichedArgs.userId = context.userId;
+	}
+
+	if (shouldInjectWebsiteOrigin && context.allowedBrowserOrigin) {
+		enrichedArgs.websiteOrigin = context.allowedBrowserOrigin;
+	}
+
+	return enrichedArgs;
 }
 
 function toExecutionFailure(tool: UnifiedTool, error: unknown): ToolExecutionFailure {
@@ -105,20 +118,6 @@ function toExecutionFailure(tool: UnifiedTool, error: unknown): ToolExecutionFai
 
 	const message = errorMessage(error);
 
-	if (
-		(tool.descriptor.metadata?.originalToolName === SupportedTools.placeOrder ||
-			tool.descriptor.metadata?.originalToolName ===
-				SupportedTools.saveFavoriteOrder) &&
-		message.startsWith("Unknown menu item: ")
-	) {
-		return toToolResultFailure({
-			toolName: tool.descriptor.name,
-			code: "BUSINESS_RULE_VIOLATION",
-			isRetryable: false,
-			message,
-		});
-	}
-
 	return toToolResultFailure({
 		toolName: tool.descriptor.name,
 		code: "TOOL_EXECUTION_FAILED",
@@ -150,7 +149,7 @@ export async function executeToolCall(
 	}
 
 	const enrichedArgs = enrichToolArgumentsWithContext(parsedJSON.data, tool, context);
-	const policyFailure = evaluateToolExecutionPolicies(tool, enrichedArgs, context);
+	const policyFailure = evaluateBrowserExecutionPolicy(tool, enrichedArgs, context);
 	if (policyFailure) {
 		return policyFailure;
 	}

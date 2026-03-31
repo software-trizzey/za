@@ -2,22 +2,17 @@ import z from "zod";
 import {
 	FavoriteOrderInputSchema,
 	FavoriteOrderSchema,
+	MemoryBucketSchema,
 	MemoryStoreSchema,
-	OrderSnapshotSchema,
-	OrderItemSchema,
 	OrderResultSchema,
 	OrderSelectionSchema,
-	PizzaMenuItemSchema,
-	RecentOrdersSchema,
 	UserMemorySchema,
 } from "./schema";
 
 export const SupportedTools = {
-	readMenu: "readMenu",
-	placeOrder: "placeOrder",
-	getUserMemory: "getUserMemory",
+	recordOrder: "recordOrder",
+	getMemory: "getMemory",
 	saveFavoriteOrder: "saveFavoriteOrder",
-	getRecentOrders: "getRecentOrders",
 } as const;
 
 export type RuntimeConfig = {
@@ -30,11 +25,9 @@ export type SupportedToolName =
 	(typeof SupportedTools)[keyof typeof SupportedTools];
 
 export type ToolSuccessDataByName = {
-	[SupportedTools.readMenu]: PizzaMenuItem[];
-	[SupportedTools.placeOrder]: OrderResult;
-	[SupportedTools.getUserMemory]: UserMemory;
-	[SupportedTools.saveFavoriteOrder]: UserMemory;
-	[SupportedTools.getRecentOrders]: RecentOrders;
+	[SupportedTools.recordOrder]: WebsiteMemoryBucket;
+	[SupportedTools.getMemory]: WebsiteMemoryBucket;
+	[SupportedTools.saveFavoriteOrder]: WebsiteMemoryBucket;
 };
 
 export type ToolExecutionFailureCode =
@@ -62,15 +55,9 @@ export type ToolExecutionFailure = {
 
 export type ToolExecutionResult = UnifiedToolExecutionSuccess | ToolExecutionFailure;
 
-export type PizzaMenuItem = z.infer<typeof PizzaMenuItemSchema>;
-
-export type OrderItem = z.infer<typeof OrderItemSchema>;
-
 export type OrderSelection = z.infer<typeof OrderSelectionSchema>;
 
 export type OrderResult = z.infer<typeof OrderResultSchema>;
-
-export type OrderSnapshot = z.infer<typeof OrderSnapshotSchema>;
 
 export type FavoriteOrder = z.infer<typeof FavoriteOrderSchema>;
 
@@ -78,6 +65,6 @@ export type FavoriteOrderInput = z.infer<typeof FavoriteOrderInputSchema>;
 
 export type UserMemory = z.infer<typeof UserMemorySchema>;
 
-export type RecentOrders = z.infer<typeof RecentOrdersSchema>;
-
 export type MemoryStore = z.infer<typeof MemoryStoreSchema>;
+
+export type WebsiteMemoryBucket = z.infer<typeof MemoryBucketSchema>;

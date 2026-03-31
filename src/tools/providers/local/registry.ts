@@ -1,66 +1,53 @@
 import {
-	getRecentOrders,
-	getUserMemory,
+	getMemory,
 	recordOrder,
 } from "../../../memory/store";
 import {
-	GetRecentOrdersArgumentsSchema,
-	GetUserMemoryArgumentsSchema,
-	PlaceOrderToolArgumentsSchema,
-	ReadMenuToolArgumentsSchema,
+	GetMemoryArgumentsSchema,
+	RecordOrderArgumentsSchema,
 	SaveFavoriteOrderArgumentsSchema,
 } from "../../../schema";
 import { SupportedTools, type SupportedToolName } from "../../../types";
-import { placeOrder, readMenu, saveFavoriteOrder } from "./domain";
+import { saveFavoriteOrder } from "./domain";
 import type { ToolDefinition } from "./types";
 
 export const localToolRegistry: {
 	[K in SupportedToolName]: ToolDefinition<K>;
 } = {
-	[SupportedTools.readMenu]: {
-		name: SupportedTools.readMenu,
-		description: "Returns the list of available pizza menu items.",
-		argsSchema: ReadMenuToolArgumentsSchema,
-		execute: async () => {
-			const menuItems = await readMenu();
-			return menuItems.filter((item) => item.isAvailable);
-		},
-	},
-	[SupportedTools.placeOrder]: {
-		name: SupportedTools.placeOrder,
-		description: "Places an order for the selected menu items.",
-		argsSchema: PlaceOrderToolArgumentsSchema,
-		execute: async (args) => {
-			const order = await placeOrder(args.selections);
-			await recordOrder(args.userId, order, args.selections);
-			return order;
-		},
-	},
-	[SupportedTools.getUserMemory]: {
-		name: SupportedTools.getUserMemory,
+	[SupportedTools.recordOrder]: {
+		name: SupportedTools.recordOrder,
 		description:
-			"Returns the user's memory, including favorite order and last order ID.",
-		argsSchema: GetUserMemoryArgumentsSchema,
+			"Records a completed order in memory scoped to the active website origin.",
+		argsSchema: RecordOrderArgumentsSchema,
 		execute: async (args) => {
-			return getUserMemory(args.userId);
+			return recordOrder(
+				args.userId,
+				args.websiteOrigin,
+				args.orderResult,
+				args.selections,
+			);
+		},
+	},
+	[SupportedTools.getMemory]: {
+		name: SupportedTools.getMemory,
+		description:
+			"Returns recent orders and favorite order for the active website origin.",
+		argsSchema: GetMemoryArgumentsSchema,
+		execute: async (args) => {
+			return getMemory(args.userId, args.websiteOrigin);
 		},
 	},
 	[SupportedTools.saveFavoriteOrder]: {
 		name: SupportedTools.saveFavoriteOrder,
 		description:
-			"Saves or clears the user's favorite order template for future reorders.",
+			"Saves or clears favorite order for the active website origin.",
 		argsSchema: SaveFavoriteOrderArgumentsSchema,
 		execute: async (args) => {
-			return saveFavoriteOrder(args.userId, args.favoriteOrder);
-		},
-	},
-	[SupportedTools.getRecentOrders]: {
-		name: SupportedTools.getRecentOrders,
-		description:
-			"Returns the user's recent order history, capped to the last 5 orders.",
-		argsSchema: GetRecentOrdersArgumentsSchema,
-		execute: async (args) => {
-			return getRecentOrders(args.userId);
+			return saveFavoriteOrder(
+				args.userId,
+				args.websiteOrigin,
+				args.favoriteOrder,
+			);
 		},
 	},
 };

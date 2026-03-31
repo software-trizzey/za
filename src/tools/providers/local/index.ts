@@ -4,8 +4,8 @@ import { toUnifiedLocalTool } from "./helpers";
 
 export { LocalToolInputValidationError } from "./errors";
 export {
-	LOCAL_TOOLS_REQUIRING_USER_ID,
 	isLocalToolRequiringUserId,
+	isLocalToolRequiringWebsiteOrigin,
 } from "./constants";
 
 export function createLocalToolProvider(): ToolProvider {

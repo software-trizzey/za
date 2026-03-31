@@ -1,12 +1,14 @@
-# Za
+# Za 🍕
+
+![Za demo](assets/za-demo.gif)
 
 
 ## Overview
 Za is a minimal pizza-ordering agent designed to learn agent fundamentals in a real, concrete workflow.
 
-I built this project to internalize the core primitives of agent systems that include model-driven reasoning, iterative tool-use loops, context management, and memory across sessions.
+I built this project to practice working with the core primitives of agent systems that include model-driven reasoning, iterative tool-use loops, context management, and memory across sessions.
 
-Instead of staying in toy prompts, Za can both use local ordering tools and navigate a live demo pizza site (Zamino's) with browser automation, while enforcing guardrails like domain restrictions and explicit confirmation before final submission.
+Instead of staying in toy prompts, Za drives website ordering end-to-end on a live demo pizza site (Zamino's) with browser automation, while enforcing guardrails like domain restrictions and explicit confirmation before final submission.
 
 **Important Concepts Learned:**
 - The five primitives of agentic systems: an LLM, a loopable session, context window, tool access, system prompt to define behaviour
@@ -19,13 +21,11 @@ Instead of staying in toy prompts, Za can both use local ordering tools and navi
 
 ## High-level System View
 
-Live: https://mermaid.ai/d/77fe5294-8589-461a-b8b5-05e0a8eb9dde
-
 ```mermaid
 flowchart LR
- subgraph subGraph0["Local Path"]
-        L1["Local Tools readMenu, placeOrder, memory"]
-        L2[("memory-store.json")]
+ subgraph subGraph0["Local Services"]
+        L1["Local memory tools recordOrder getMemory saveFavoriteOrder"]
+        L2[("memory-store.json websiteByOrigin")]
   end
  subgraph subGraph1["Website Path"]
         W1["MCP Playwright Tools"]
@@ -42,20 +42,23 @@ flowchart LR
     M --> R["Final response to user"]
 ```
 
-1. User states desired pizza and quantity. If no quantity is provided the model will normally default to 1.
-2. System receives request and determines what tools are available.
-3. The user's order and allowed tools are passed to the model along with general prompt instructions.
-4. Given this context, the model decides what to do each turn.
-    - In the likely happy path, it first calls `readMenu` to find a valid menu item.
-    - It then calls `placeOrder` with the selected item and quantity.
-    - In some turns, it may emit multiple tool calls before returning a final answer.
-5. After the order is placed the model will decide that the task has been completed and return the result.
-6. If an error (bad tool arguments, bad JSON parsing, etc.) occurs during the steps above, the agent
-   will retry on the next step. Only if an unknown tool is selected will the agent stop.
-7. The system will track the 5 most recent orders by the user. It will also remember their preferred order
-   when specified.
+### Core UX Flow
+1. The user submits an order request in the CLI/REPL with a website URL (first turn requires a URL).
+2. The session runner builds the model turn context: system instructions, conversation history, and the currently available tools.
+3. The model plans the next action and can either respond directly or call one or more tools in a turn.
+4. Tool calls are routed through the unified tool registry, which dispatches to:
+   - local memory tools (`recordOrder`, `getMemory`, `saveFavoriteOrder`), and
+   - MCP Playwright tools for website discovery and ordering flows.
+5. Execution policies are enforced before tool execution (for example, allowed website origin and explicit confirmation before final submit).
+6. Tool results are returned to the model, which continues the loop until it can produce a final user-facing result.
+7. If a recoverable error occurs (invalid args, parsing/tool failure), the loop continues so the model can retry with corrected actions.
+8. Memory is updated after successful ordering: recent orders and favorites are tracked per website origin.
 
-## Setup
+## Getting started
+
+Preq:
+- Bun runtime installed: https://bun.com/docs/installation
+- OpenAI API key: https://platform.openai.com/api-keys 
 
 Install dependencies:
 
@@ -63,19 +66,32 @@ Install dependencies:
 bun install
 ```
 
-Run one-shot:
+Set env variables
 
 ```bash
-bun run src/index.ts run "order 2 pepperoni pizzas"
+cp .env.example .env
+```
+
+And set your `OPENAI_API_KEY` key or the agent won't work. Playwright MCP is required and enabled by default.
+
+Start local website
+```bash
+bun run dev:website
+```
+
+Test agent via headless request:
+
+```bash
+bun run src/index.ts run "order 1 full stack and 1 null pointer pizza from http://localhost:3099/"
 ```
 
 Run interactive REPL (default):
 
 ```bash
 bun run src/index.ts
-# or after linking bin: za
 ```
 
+### Running as binary
 Use `za` as a global CLI binary:
 
 ```bash
@@ -86,53 +102,10 @@ bun link
 Ensure Bun's bin directory is in your `PATH` (typically `~/.bun/bin`), then run:
 
 ```bash
-za # active interactive REPL
-za run "I want a pizza"
+za # activate interactive REPL
+za run "I want a pizza from https://za-website.onrender.com"
 ```
 
-## Local Website
-
-Run Zamino's website locally:
-
-```bash
-bun run dev:website
-```
-
-Open `http://localhost:3099`.
-
-Useful website routes for testing:
-
-- `/menu`
-- `/confirmation`
-- `/api/menu`
-- `/api/orders/latest`
-
-## Deploy Website on Render
-
-Create a Render **Web Service** that points to this repo and configure:
-
-- Runtime: `Node`
-- Build Command: `bun install`
-- Start Command: `bun run start:website`
-- Health Check Path: `/api/health`
-
-Notes:
-
-- `src/website/server-config.ts` reads `PORT` from the environment (with local fallback to `3099`).
-- Keep instance count at 1 for more consistent in-memory website order state during demos.
-
-## Environment
-
-Required environment variables:
-
-- `OPENAI_API_KEY`
-- `AUTHENTICATED_USER_ID` (UUID)
-- `MCP_PLAYWRIGHT_ENABLED` (set to `true` to enable Playwright MCP tools)
-
-Test the agent against Zamino's website:
-```bash
-bun run src/index.ts run "I want two full stack pizzas from http://localhost:3099/"
-```
 
 ## Development
 
@@ -149,13 +122,3 @@ Commands:
 - `/help`
 - `/reset`
 - `/exit` | `:q`
-
-Activity stream:
-
-- REPL mode shows compact activity lines for turn/tool progress.
-- One-shot `run` mode stays focused on the final response output.
-
-## Website Discovery Safeguards
-
-- Browser final-submit actions require explicit user confirmation in a separate turn.
-- Browser navigation is restricted to the discovered website origin from the user-provided URL.

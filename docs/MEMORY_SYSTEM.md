@@ -9,7 +9,7 @@ agent and not an authentication.
 
 
 ## Goal
-- Support agent behaviors like remembering a favorite order and retrieving recent orders.
+- Support agent behaviors like remembering a favorite order and retrieving recent orders per website origin.
 
 
 ## Storage Model
@@ -20,20 +20,24 @@ Memory is persisted in `memory-store.json` as:
 
 Each `UserMemory` contains:
 
+- `websiteByOrigin`: map of `origin -> MemoryBucket`
+
+Each `MemoryBucket` contains:
+
 - `favoriteOrder`: saved reusable order template (or `null`)
 - `lastOrderId`: pointer to the most recent order ID (or `null`)
 - `recentOrders`: most recent 5 order snapshots (newest first)
 - `updatedAtIso`: last update timestamp
 
 ## Order Tracking Behavior
-On successful `placeOrder`:
+On successful `recordOrder`:
 
 1. The system creates an order result.
 2. It records an order snapshot in `recentOrders`.
 3. It updates `lastOrderId` to the new order ID.
 4. It deduplicates by `orderId` and caps history to 5 entries.
 
-This flow is automatic and does not depend on the model making extra tool calls.
+This flow is scoped to the active website origin and depends on the model calling `recordOrder` after successful submission.
 
 ## Favorite Order Behavior
 Favorite order is independent from last/recent orders.
@@ -44,9 +48,9 @@ Favorite order is independent from last/recent orders.
 ## Agent Tooling
 The agent has memory-oriented tools for:
 
-- reading user memory
-- saving favorite orders
-- retrieving recent orders
+- reading origin-scoped memory (`getMemory`)
+- saving origin-scoped favorite orders (`saveFavoriteOrder`)
+- recording completed origin-scoped orders (`recordOrder`)
 
 `userId` is injected by runtime context, so the agent should not ask the user for identity.
 

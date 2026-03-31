@@ -20,9 +20,9 @@ Note: This repo includes a dedicated Zamino website test target in `src/website/
 
 - A unified app-level tool registry is implemented in `src/tools/registry.ts`.
 - Tool providers are split into local tools (`src/tools/providers/local/**`) and MCP-backed tools (`src/mcp/**`).
-- MCP tool names are prefixed (for example, `mcp_playwright_navigate`) to avoid collisions with internal tools (for example, `internal_readMenu`).
+- MCP tool names are prefixed (for example, `mcp_playwright_navigate`) to avoid collisions with internal tools (for example, `internal_getMemory`).
 - Tool execution remains centralized in `src/tools/execute.ts`.
-- MCP is currently toggled with `MCP_PLAYWRIGHT_ENABLED` and uses defaults from `src/mcp/config.ts`.
+- Playwright MCP is always enabled and uses defaults from `src/mcp/config.ts`.
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
 - Use `bun test` instead of `jest` or `vitest`

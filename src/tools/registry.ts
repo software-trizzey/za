@@ -30,11 +30,6 @@ async function initializeProviders(): Promise<ToolProvider[]> {
 	const localProvider = createLocalToolProvider();
 	const mcpServerConfigs = getConfiguredMcpServers();
 
-	if (mcpServerConfigs.length === 0) {
-		console.log("MCP: disabled (no configured servers enabled)");
-		return [localProvider];
-	}
-
 	for (const config of mcpServerConfigs) {
 		console.log(
 			`MCP: enabling server=${config.id} prefix=${config.toolPrefix} timeoutMs=${config.timeoutMs} maxRetries=${config.maxRetries} maxArgumentBytes=${config.maxArgumentBytes} maxDiscoveredTools=${config.maxDiscoveredTools} allowedTools=${config.allowedTools === null ? "all" : config.allowedTools.length} blockedTools=${config.blockedTools.length}`,

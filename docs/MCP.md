@@ -40,7 +40,7 @@ Once that's in place we can extend `src/tools/registry.ts` to combine the curren
 ### Updated Tool Registry
 
 Returns a combined registry with:
-- Local tools provider (readMenu, placeOrder)
+- Local memory tools provider (`recordOrder`, `getMemory`, `saveFavoriteOrder`)
 - MCP tools provider (Playwright)
 
 `src/tools/execute.ts` remains the single execution path and routes calls by provider (`local` vs `mcp`).
@@ -52,11 +52,11 @@ Returns a combined registry with:
   - local tools provider (`src/tools/providers/local/**`)
   - MCP tools provider (`src/mcp/provider.ts`)
 - Tool names are prefixed to avoid collisions:
-  - `internal_readMenu`
+  - `internal_getMemory`
   - `mcp_playwright_navigate`
 - OpenAI tool definitions are generated from the unified registry in `src/tools/adapters/openai.ts`.
 - Tool execution runs through a single broker in `src/tools/execute.ts` and returns a shared success/failure envelope.
-- MCP is enabled with `MCP_PLAYWRIGHT_ENABLED=true` and uses hardcoded defaults for command/args/prefix in `src/mcp/config.ts`.
+- Playwright MCP is always enabled and uses hardcoded defaults for command/args/prefix in `src/mcp/config.ts`.
 
 ### MCP Modules
 
@@ -82,7 +82,7 @@ Returns a combined registry with:
 ## Status
 
 - Minimal MCP registry groundwork is complete.
-- Next step: integrate Playwright-driven website flows for menu parsing and order placement.
+- Playwright-driven website flows for menu parsing and order placement are integrated.
 
 ### Data shape
 
@@ -90,7 +90,7 @@ The internal contract
 ```typescript
 type UnifiedToolDescriptor = {
     id: string;
-    name: string; // "internal_readMenu" | "mcp_playwright_navigate"
+    name: string; // "internal_getMemory" | "mcp_playwright_navigate"
     provider: "local" | "mcp";
     description: string;
     inputSchemaJson: Record<string, unknown>;

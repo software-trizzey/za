@@ -1,13 +1,5 @@
 import { WEBSITE_ROUTES } from "../routes";
-
-type WebsiteMenuItem = {
-	id: string;
-	name: string;
-	description: string;
-	priceCents: number;
-	isAvailable: boolean;
-	category: "classic" | "specialty";
-};
+import type { WebsiteMenuItem } from "../data";
 
 type MenuResponse = {
 	menuItems: WebsiteMenuItem[];

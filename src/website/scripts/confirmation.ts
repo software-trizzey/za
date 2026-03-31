@@ -1,23 +1,12 @@
 import { WEBSITE_ROUTES } from "../routes";
+import type { WebsiteOrderRecord } from "../data";
 
-type WebsiteOrderResultItem = {
-	menuItemId: string;
-	name: string;
-	quantity: number;
-	unitPriceCents: number;
-	totalPriceCents: number;
-};
-
-type WebsiteOrderRecord = {
-	orderId: string;
-	items: WebsiteOrderResultItem[];
-	totalPriceCents: number;
+type WebsiteOrderSummary = WebsiteOrderRecord & {
 	totalPriceUsd: string;
-	createdAtIso: string;
 };
 
 type LatestOrderResponse = {
-	order: WebsiteOrderRecord | null;
+	order: WebsiteOrderSummary | null;
 };
 
 function getRequiredNode<TNode extends HTMLElement>(id: string): TNode {
@@ -41,7 +30,7 @@ function renderNoOrder(): void {
 	notificationNode.textContent = "No website order notification has been emitted yet.";
 }
 
-function renderOrder(order: WebsiteOrderRecord): void {
+function renderOrder(order: WebsiteOrderSummary): void {
 	orderIdNode.textContent = order.orderId;
 	metaNode.innerHTML =
 		`<p><strong>Total:</strong> ${order.totalPriceUsd}</p>` +

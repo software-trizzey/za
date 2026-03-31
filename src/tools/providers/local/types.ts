@@ -1,22 +1,18 @@
 import z from "zod";
 
 import {
-	GetRecentOrdersArgumentsSchema,
-	GetUserMemoryArgumentsSchema,
-	PlaceOrderToolArgumentsSchema,
-	ReadMenuToolArgumentsSchema,
+	GetMemoryArgumentsSchema,
+	RecordOrderArgumentsSchema,
 	SaveFavoriteOrderArgumentsSchema,
 } from "../../../schema";
 import { SupportedTools, type SupportedToolName, type ToolSuccessDataByName } from "../../../types";
 
 export type ToolArgumentsByName = {
-	[SupportedTools.readMenu]: z.infer<typeof ReadMenuToolArgumentsSchema>;
-	[SupportedTools.placeOrder]: z.infer<typeof PlaceOrderToolArgumentsSchema>;
-	[SupportedTools.getUserMemory]: z.infer<typeof GetUserMemoryArgumentsSchema>;
+	[SupportedTools.recordOrder]: z.infer<typeof RecordOrderArgumentsSchema>;
+	[SupportedTools.getMemory]: z.infer<typeof GetMemoryArgumentsSchema>;
 	[SupportedTools.saveFavoriteOrder]: z.infer<
 		typeof SaveFavoriteOrderArgumentsSchema
 	>;
-	[SupportedTools.getRecentOrders]: z.infer<typeof GetRecentOrdersArgumentsSchema>;
 };
 
 export type ToolDefinition<TToolName extends SupportedToolName> = {
