@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: za-website
+    name: Zamino's
     runtime: node
     numInstances: 1
     buildCommand: bun install
