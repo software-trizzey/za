@@ -10,6 +10,8 @@ I built this project to practice working with the core primitives of agent syste
 
 Instead of staying in toy prompts, Za drives website ordering end-to-end on a live demo pizza site (Zamino's) with browser automation, while enforcing guardrails like domain restrictions and explicit confirmation before final submission.
 
+Check out this post for a detailed write-up on the motivation behind this project: https://tristandeane.ca/posts/za-a-pizza-ordering-agent
+
 **Important Concepts Learned:**
 - The five primitives of agentic systems: an LLM, a loopable session, context window, tool access, system prompt to define behaviour
 - Long-term memory using simple JSON file for caching user details like recent and favorite orders
